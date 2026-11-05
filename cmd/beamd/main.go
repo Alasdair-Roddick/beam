@@ -24,9 +24,9 @@ func handleOpen(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Attemping to open vscode at %v@%v -> %v", req.User, req.Host, req.Path)
 
-	url := fmt.Sprintf("open vscode://vscode-remote/ssh-remote+%s@%s%s", req.User, req.Host, req.Path)
+	url := fmt.Sprintf("vscode://vscode-remote/ssh-remote+%s@%s%s", req.User, req.Host, req.Path)
 
-	cmd := exec.Command(url)
+	cmd := exec.Command("open", url)
 	if err := cmd.Run(); err != nil {
 		log.Printf("Failed to open VSCode @ %s@%s%s: %s", req.User, req.Host, req.Path, err)
 	}
