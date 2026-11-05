@@ -18,18 +18,33 @@ func handleOpen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.User == "" {
+		log.Print("User request is empty, please specify a valid user")
+		return
+	}
+
+	if req.Host == "" {
+		log.Print("Host request is empty, please specify a valid host")
+		return
+	}
+
+	if req.Path == "" {
+		log.Print("Path request is empty, please specify a valid path")
+		return
+	}
+
 	log.Printf("open request: user=%s host=%s path=%s", req.User, req.Host, req.Path)
-
-	w.WriteHeader(http.StatusNoContent)
-
-	log.Printf("Attemping to open vscode at %v@%v -> %v", req.User, req.Host, req.Path)
 
 	url := fmt.Sprintf("vscode://vscode-remote/ssh-remote+%s@%s%s", req.User, req.Host, req.Path)
 
 	cmd := exec.Command("open", url)
 	if err := cmd.Run(); err != nil {
 		log.Printf("Failed to open VSCode @ %s@%s%s: %s", req.User, req.Host, req.Path, err)
+		http.Error(w, "failed to open VS Code: "+err.Error(), http.StatusInternalServerError)
+		return
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func main() {

@@ -18,6 +18,7 @@ import (
 )
 
 func main() {
+	log.SetFlags(0)
 
 	url := "http://127.0.0.1:7777/open"
 
@@ -66,7 +67,7 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 204 {
+	if resp.StatusCode != http.StatusNoContent {
 		body, _ := io.ReadAll(resp.Body)
 		log.Fatalf("beamd returned %d: %s", resp.StatusCode, body)
 	}
