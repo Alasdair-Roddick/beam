@@ -19,17 +19,18 @@ func handleOpen(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.User == "" {
-		log.Print("User request is empty, please specify a valid user")
+		http.Error(w, "User request is empty, please specify a valid user", http.StatusBadRequest)
+
 		return
 	}
 
 	if req.Host == "" {
-		log.Print("Host request is empty, please specify a valid host")
+		log.Print(w, "Host request is empty, please specify a valid host", http.StatusBadRequest)
 		return
 	}
 
 	if req.Path == "" {
-		log.Print("Path request is empty, please specify a valid path")
+		log.Print(w, "Path request is empty, please specify a valid path", http.StatusBadRequest)
 		return
 	}
 
