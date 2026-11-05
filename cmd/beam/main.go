@@ -18,6 +18,7 @@ import (
 )
 
 func main() {
+	log.SetFlags(0)
 
 	url := "http://127.0.0.1:7777/open"
 
@@ -60,13 +61,16 @@ func main() {
 	resp, err := client.Do(req)
 	if err != nil {
 		if errors.Is(err, syscall.ECONNREFUSED) {
-			log.Fatalf("No connection to beamd (%s at %s), is it running on the remote system?", syscall.ECONNREFUSED, url)
+			log.Fatalf("yelling at an empty room rn. reconnect please :)")
 		}
-		log.Fatalf("Request failed: %v", err)
+		if errors.Is(err, syscall.ECONNRESET) {
+			log.Fatalf("The remote is there (can connect to the mac) but nothing is listening")
+		}
+		log.Fatalf("Not a clue what went wrong...: %v", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 204 {
+	if resp.StatusCode != http.StatusNoContent {
 		body, _ := io.ReadAll(resp.Body)
 		log.Fatalf("beamd returned %d: %s", resp.StatusCode, body)
 	}
