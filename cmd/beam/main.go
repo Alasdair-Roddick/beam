@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"os/user"
+	"syscall"
 	"time"
 
 	"github.com/Alasdair-Roddick/beam/internal/protocol"
@@ -57,6 +59,9 @@ func main() {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		if errors.Is(err, syscall.ECONNREFUSED) {
+			log.Fatalf("No connection to beamd (%s at %s), is it running on the remote system?", syscall.ECONNREFUSED, url)
+		}
 		log.Fatalf("Request failed: %v", err)
 	}
 	defer resp.Body.Close()
